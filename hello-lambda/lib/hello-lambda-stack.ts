@@ -1,16 +1,32 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 
 export class HelloLambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    // Define the Lambda function resource
+    const helloFunction = new lambda.Function(this, "HelloLambdaFunction", {
+        runtime: lambda.Runtime.PYTHON_3_12,
+        handler: "index.handler",
+        code: lambda.Code.fromInline(`
+          def handler(event, context):
+              return {
+                'statusCode': 200,
+                'body': 'hello, world'
+              }
+        `)
+    });
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'HelloLambdaQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    // Define the Lambda function URL resource
+    const myFunctionUrl = helloFunction.addFunctionUrl({
+        authType: lambda.FunctionUrlAuthType.NONE,
+    });
+
+    // Define a CloudFormation output for your URL
+    new cdk.CfnOutput(this, "myFunctionUrlOutput", {
+        value: myFunctionUrl.url,
+    })
   }
 }
