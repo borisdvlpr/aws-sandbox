@@ -1,17 +1,29 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as HelloLambda from '../lib/hello-lambda-stack';
+import * as cdk from 'aws-cdk-lib';
+import { Template } from 'aws-cdk-lib/assertions';
+import { HelloLambdaStack } from '../lib/hello-lambda-stack';
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/hello-lambda-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new HelloLambda.HelloLambdaStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
+describe('Given the creation of the hello-lambda stack', () => {
+    describe('When the stack synthesises', () => {
+        const app = new cdk.App();
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+        const stack = new HelloLambdaStack(app, "HelloLambdaTestStack");
+
+        const template = Template.fromStack(stack);
+
+        test('Then the lambda function should be created', () => {
+            template.hasResourceProperties('AWS::Lambda::Function', {
+                Runtime: 'python3.12',
+                Handler: 'index.handler',
+                Code: {
+                    ZipFile: `
+          def handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': 'hello, world'
+              }
+        `
+                }
+            });
+        });
+    });
 });

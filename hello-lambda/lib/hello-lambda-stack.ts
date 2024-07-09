@@ -13,8 +13,8 @@ export class HelloLambdaStack extends cdk.Stack {
         code: lambda.Code.fromInline(`
           def handler(event, context):
               return {
-                'statusCode': 200,
-                'body': 'hello, world'
+                  'statusCode': 200,
+                  'body': 'hello, world'
               }
         `)
     });
