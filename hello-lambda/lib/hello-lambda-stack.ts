@@ -11,11 +11,11 @@ export class HelloLambdaStack extends cdk.Stack {
         runtime: lambda.Runtime.PYTHON_3_12,
         handler: "index.handler",
         code: lambda.Code.fromInline(`
-          def handler(event, context):
-              return {
-                  'statusCode': 200,
-                  'body': 'hello, world'
-              }
+def handler(event, context):
+    return {
+        'statusCode': 200,
+        'body': 'hello, world'
+    }
         `)
     });
 

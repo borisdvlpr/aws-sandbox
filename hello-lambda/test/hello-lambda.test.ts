@@ -16,11 +16,11 @@ describe('Given the creation of the hello-lambda stack', () => {
                 Handler: 'index.handler',
                 Code: {
                     ZipFile: `
-          def handler(event, context):
-              return {
-                  'statusCode': 200,
-                  'body': 'hello, world'
-              }
+def handler(event, context):
+    return {
+        'statusCode': 200,
+        'body': 'hello, world'
+    }
         `
                 }
             });
