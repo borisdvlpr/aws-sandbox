@@ -12,17 +12,15 @@ describe('Given the creation of the hello-lambda stack', () => {
 
         test('Then the lambda function should be created', () => {
             template.hasResourceProperties('AWS::Lambda::Function', {
-                Runtime: 'python3.12',
-                Handler: 'index.handler',
-                Code: {
-                    ZipFile: `
-def handler(event, context):
-    return {
-        'statusCode': 200,
-        'body': 'hello, world'
-    }
-        `
-                }
+                Runtime: 'provided.al2023',
+                Handler: 'bootstrap',
+                FunctionName: 'hello-lambda'
+            });
+        });
+
+        test('Then the lambda function URL should be available', () => {          
+            template.hasResourceProperties('AWS::Lambda::Url', {
+                AuthType: 'NONE'
             });
         });
     });
