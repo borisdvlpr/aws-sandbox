@@ -1,14 +1,11 @@
-# Welcome to your CDK TypeScript project
+# Amazon API Gateway to AWS Lambda to Amazon DocumentDB
 
-This is a blank project for CDK development with TypeScript.
+This project was inspired by resources from [Serverless Land](https://serverlessland.com). For the official documentation, please visit [this link](https://serverlessland.com/patterns/apigw-http-lambda-documentdb-cdk).
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Architecture
 
-## Useful commands
+This AWS CDK stack deploys an API Gateway HTTP API that integrates with a Lambda function and a DocumentDB cluster. The Lambda function is configured to use a customer VPC to connect to the DocumentDB cluster. The Lambda function implements CRUD operations on the database. The diagram below represents the architecture for this pattern:
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+<p align="center">
+  <img src="./assets/apigw-http-lambda-documentdb-arch-diagram.png" alt="Amazon API Gateway to AWS Lambda to Amazon DocumentDB Architecture Diagram"/>
+</p>
