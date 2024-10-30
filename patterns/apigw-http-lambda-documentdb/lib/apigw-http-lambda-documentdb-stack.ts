@@ -10,7 +10,7 @@ export class ApigwHttpLambdaDocumentdbStack extends cdk.Stack {
 
 		const documentDBSecretName = 'documentDbSecretName';
 
-		//create vpc with public and private subnets
+		// create vpc with public and private subnets
 		const vpc = new ec2.Vpc(this, 'VPC-serverless-pattern', {
 			ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
 			maxAzs: 2, 
@@ -21,13 +21,13 @@ export class ApigwHttpLambdaDocumentdbStack extends cdk.Stack {
 			natGateways: 1
 		});
 
-		//create api gateway
+		// create api gateway
 		const httpApi = new apigw.HttpApi(this, 'HttpApiGateway', {
 			apiName: 'ApiGatewayToLambda',
 			description: 'Integration between API Gateway HTTP and Lambda function',
 		});
 
-		//create documentdb in the private subnet of the vpc
+		// create documentdb in the private subnet of the vpc
 		const docDbCluster = new docdb.DatabaseCluster(this, 'Database', {
 			masterUser: {
 				username: 'myuser',					//NOTE: 'admin' is reserved by documentdb
@@ -40,5 +40,14 @@ export class ApigwHttpLambdaDocumentdbStack extends cdk.Stack {
 			},
 			vpc: vpc
 		});
+
+		// allow documentdb access from the vpc
+		docDbCluster.connections.allowFrom(ec2.Peer.ipv4(vpc.vpcCidrBlock), ec2.Port.tcp(27017));
+
+		// destroy documentdb cluster when stack is destroyed - remove the production use
+		docDbCluster.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
+
+		// aws secrets manager secret for the documentdb
+		const dbSecret = docDbCluster.secret!
 	}
 }
