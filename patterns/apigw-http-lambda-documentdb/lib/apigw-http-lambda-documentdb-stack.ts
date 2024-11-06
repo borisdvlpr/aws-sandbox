@@ -6,6 +6,7 @@ import * as docdb from 'aws-cdk-lib/aws-docdb';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
+import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 
 export class ApigwHttpLambdaDocumentdbStack extends cdk.Stack {
 	constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -83,5 +84,22 @@ export class ApigwHttpLambdaDocumentdbStack extends cdk.Stack {
 			resources: [dbSecret.secretFullArn!],
 			effect: cdk.aws_iam.Effect.ALLOW
 		}));
+
+		// create an integration between the api gateway and the lambda function
+		const lambdaIntegration = new HttpLambdaIntegration('MetaDataLinks', lambdaToDocumentDb);
+
+		// create a default route to the lambda function
+		httpApi.addRoutes({
+			path: '/',
+			methods: [apigw.HttpMethod.ANY],
+			integration: lambdaIntegration,
+		});
+
+		// output the url of the api gateway
+		new cdk.CfnOutput(this, 'ApiGatewayURL', {
+			value: httpApi.apiEndpoint,
+			description: 'The URL of the API Gateway',
+			exportName: 'ApiGatewayURL',
+		});
 	}
 }
