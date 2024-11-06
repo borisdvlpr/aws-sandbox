@@ -1,7 +1,10 @@
+import * as path from 'path';
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as apigw from 'aws-cdk-lib/aws-apigatewayv2';
 import * as docdb from 'aws-cdk-lib/aws-docdb';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 
 export class ApigwHttpLambdaDocumentdbStack extends cdk.Stack {
@@ -49,5 +52,36 @@ export class ApigwHttpLambdaDocumentdbStack extends cdk.Stack {
 
 		// aws secrets manager secret for the documentdb
 		const dbSecret = docDbCluster.secret!
+
+		// lambda function which is connected to the documentdb
+		const lambdaToDocumentDb = new NodejsFunction(this, 'LambdaToDocumentDB', {
+			runtime: Runtime.NODEJS_20_X,
+			handler: 'main.handler',
+			timeout: cdk.Duration.seconds(300),
+			entry: path.join(__dirname, '../lambda/app.ts'),
+			environment: {
+				DOCUMENTDB_SECRET_NAME: documentDBSecretName,
+			},
+			vpc: vpc,	// lambda needs to be in the vpc which has a route to the documentdb database
+			vpcSubnets: {
+				subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+			},
+			bundling: {
+				commandHooks: {
+					afterBundling: (inputDir: string, outputDir: string): string[] => [
+						`cp ${inputDir}/lambda/global-bundle.pem ${outputDir}`
+					],
+					beforeBundling: (inputDir: string, outputDir: string): string[] => [],
+					beforeInstall: (inputDir: string, outputDir: string): string[] => [],
+				},
+			},
+		});
+
+		// grant lambda access to aws secrets manager secret
+		lambdaToDocumentDb.addToRolePolicy(new cdk.aws_iam.PolicyStatement({
+			actions: ['secretsmanager:GetSecretValue'],
+			resources: [dbSecret.secretFullArn!],
+			effect: cdk.aws_iam.Effect.ALLOW
+		}));
 	}
 }
