@@ -1,17 +1,17 @@
-resource "aws_s3_bucket" "state_bucket" {
-  bucket = "example-state-bucket"
+resource "aws_s3_bucket" "state_bucket_example" {
+  bucket = "state-bucket-example"
 }
 
-resource "aws_s3_bucket_ownership_controls" "state_bucket" {
-  bucket = aws_s3_bucket.state_bucket.bucket
+resource "aws_s3_bucket_ownership_controls" "state_bucket_example" {
+  bucket = aws_s3_bucket.state_bucket_example.bucket
 
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "state_bucket" {
-  bucket = aws_s3_bucket.state_bucket.bucket
+resource "aws_s3_bucket_public_access_block" "state_bucket_example" {
+  bucket = aws_s3_bucket.state_bucket_example.bucket
 
   block_public_acls = true
   block_public_policy = true
