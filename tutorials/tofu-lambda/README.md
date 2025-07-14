@@ -5,5 +5,6 @@ This is a simple project, based on the initial CDK tutorial, taken from the [off
 - The infrastructure is defined using OpenTofu
 - The lambda function is built with Rust on a separate project
 - The infrastructure is applied and the binary is passed into the lambda function
+- Resources for OpenTofu state management are also created alongside the lambda
 
 The lambda function was created using Cargo Lambda, more information on how to use it for the development and test of lambda functions on [their documentation](https://www.cargo-lambda.info/guide/what-is-cargo-lambda.html).
