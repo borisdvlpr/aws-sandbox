@@ -1,6 +1,10 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2025-07-09T16:14:05Z",
+      "resolved": "github:NixOS/nixpkgs/be9e214982e20b8310878ac2baa063a961c1bdf6?lastModified=1752077645&narHash=sha256-HM791ZQtXV93xtCY%2BZxG1REzhQenSQO020cu6rHtAPk%3D"
+    },
     "opentofu@latest": {
       "last_modified": "2025-07-06T07:15:37Z",
       "resolved": "github:NixOS/nixpkgs/ceb24d94c6feaa4e8737a8e2bd3cf71c3a7eaaa0#opentofu",
