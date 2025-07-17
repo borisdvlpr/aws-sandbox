@@ -6,6 +6,7 @@ This project demonstrates how to deploy an AWS Lambda function written in Rust u
 
 - **Infrastructure as Code:** Define and manage AWS resources using OpenTofu
 - **Rust Lambda:** Build and package the Lambda function in Rust using Cargo Lambda
+- **Automated Deployment:** The Lambda binary is built and passed to the function automatically during deployment.
 - **State Management:** Automatically create and configure resources for OpenTofu state management (e.g., S3 bucket, DynamoDB table).
 
 ## Project Structure
