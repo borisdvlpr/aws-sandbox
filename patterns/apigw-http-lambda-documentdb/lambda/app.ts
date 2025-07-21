@@ -148,7 +148,7 @@ async function getMongoDbUri() {
             const DOCDB_USERNAME = username || 'myuser';
             const DOCDB_PORT = port || 'port';
 
-            const uri = `mongodb://${DOCDB_USERNAME}:${DOCDB_PASSWORD}@${DOCDB_ENDPOINT}:${DOCDB_PORT}/mydb?tls=true&replicaSet=rs0&        readPreference=secondaryPreferred&retryWrites=false`;
+            const uri = `mongodb://${DOCDB_USERNAME}:${DOCDB_PASSWORD}@${DOCDB_ENDPOINT}:${DOCDB_PORT}/mydb?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false`;
 
             return uri;
         }
