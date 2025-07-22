@@ -32,4 +32,6 @@ tofu plan
 tofu apply
 ```
 
+For more detailed information on how to deploy this OpenTofu infrastructure please refer to the [official OpenTofu core operations guide](https://opentofu.org/docs/intro/core-workflow/).
+
 3. **Invoke the Lambda**: Call the Lambda function using the URL provided in the OpenTofu output or thorugh the AWS Console.
