@@ -1,13 +1,39 @@
 # Hello Lambda
 
-This is a simple project, based on the initial CDK tutorial, taken from the [offical documentation](https://docs.aws.amazon.com/cdk/v2/guide/hello_world.html), with a few extra features:
+This project demonstrates how to deploy an AWS Lambda function written in Rust using [Cargo Lambda](https://www.cargo-lambda.info/guide/what-is-cargo-lambda.html) and provision it with AWS CDK. It is based on the [official AWS CDK hello world tutorial](https://docs.aws.amazon.com/cdk/v2/guide/hello_world.html), with a few enhancements.
 
-- The Lambda function is built with Rust on a separate project
-- The code is builded and the binary is passed into the Lambda function
+## Features
 
-The Lambda function was created using Cargo Lambda, more information on how to use it for the development and test of lambda functions on [their documentation](https://www.cargo-lambda.info/guide/what-is-cargo-lambda.html).
+- **Rust Lambda:** Build and package the Lambda function in Rust using Cargo Lambda
+- **Automated Deployment:** The Lambda binary is built and passed to the function automatically during deployment.
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
+
+## Project Structure
+
+- `infra/` – AWS CDK configuration files for AWS resources.
+- `lambdas/hello-lambda` – Rust source code for the Lambda function.
+
+## Usage
+
+1. **Build the Lambda Function:**
+
+```sh
+cd lambdas/hello-lambda
+cargo lambda build --release
+```
+
+2. **Deploy Infrastructure:**
+
+```sh
+cdk bootstrap
+cdk synth
+cdk deploy
+```
+
+For more detailed information on how to deploy the CDK code please refer to the [official AWS CDK hello world tutorial](https://docs.aws.amazon.com/cdk/v2/guide/hello_world.html).
+
+3. **Invoke the Lambda:** Call the Lambda function using the AWS Console or AWS CLI.
 
 ## Useful commands
 
