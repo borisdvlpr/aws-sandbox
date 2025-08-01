@@ -34,9 +34,15 @@ class ScheduledDataSummaryExportStack(Stack):
             self, 
             "api_lambda",
             runtime = _lambda.Runtime.PYTHON_3_13,
-            code = _lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), "lambda/api")),
+            code = _lambda.Code.from_asset(os.path.join(os.getcwd(), "lambda/package.zip")),
             handler = "index.handler",
+            environment = {
+                "TABLE_NAME": car_table.table_name,
+            }
         )
+
+        # grant permissions
+        car_table.grant_write_data(api_lambda)
 
         # api gateway
         apigw = _apigw.LambdaRestApi(
