@@ -52,13 +52,48 @@ class ScheduledDataSummaryExportStack(Stack):
             ),
         )
 
-        # grant permissions
-        car_table.grant_write_data(api_lambda)
+        # request model for validation
+        car_model = apigw.add_model(
+            "CarModel",
+            content_type = "application/json",
+            schema = _apigw.JsonSchema(
+                type = _apigw.JsonSchemaType.OBJECT,
+                properties = {
+                    "brand": _apigw.JsonSchema(
+                        type = _apigw.JsonSchemaType.STRING,
+                        min_length = 1,
+                        max_length = 50
+                    ),
+                    "model": _apigw.JsonSchema(
+                        type = _apigw.JsonSchemaType.STRING,
+                        min_length = 1,
+                        max_length = 100
+                    ),
+                    "year": _apigw.JsonSchema(
+                        type = _apigw.JsonSchemaType.INTEGER,
+                        minimum = 1900,
+                        maximum = 2030
+                    ),
+                    "engine_cc": _apigw.JsonSchema(
+                        type = _apigw.JsonSchemaType.INTEGER,
+                        minimum = 1000,
+                        maximum = 8000
+                    )
+                },
+                required = ["brand", "model", "year", "engine_cc"]
+            )
+        )
+
+        car_validator = apigw.add_request_validator(
+            "CarDataValidator",
+            validate_request_body = True,
+        )
         
         # api resources and methods
         cars_resource = apigw.root.add_resource("cars")
         cars_resource.add_method(
             "POST",
+            request_validator = car_validator,
             method_responses=[
                 _apigw.MethodResponse(
                     status_code="200",
