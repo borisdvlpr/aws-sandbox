@@ -1,6 +1,5 @@
 import aws_cdk as cdk
 from aws_cdk import (
-    Stack,
     aws_apigateway as _apigw,
     aws_dynamodb as dynamodb,
     aws_lambda as _lambda,
@@ -8,6 +7,8 @@ from aws_cdk import (
     Stack
 )
 from constructs import Construct
+import os
+
 
 class ScheduledDataSummaryExportStack(Stack):
 
@@ -32,18 +33,9 @@ class ScheduledDataSummaryExportStack(Stack):
         api_lambda = _lambda.Function(
             self, 
             "api_lambda",
-            runtime = _lambda.Runtime.NODEJS_22_X,
+            runtime = _lambda.Runtime.PYTHON_3_13,
+            code = _lambda.Code.from_asset(os.path.join(os.path.dirname(__file__), "lambda/api")),
             handler = "index.handler",
-            code = _lambda.Code.from_inline(
-                """
-                exports.handler = async function(event) {
-                    return {
-                        statusCode: 200,
-                        body: JSON.stringify('Hello World!'),
-                    };
-                };
-                """
-            ),
         )
 
         # api gateway
