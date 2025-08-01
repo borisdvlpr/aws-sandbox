@@ -44,7 +44,8 @@ build:
 	echo "Lambda package created: $(PACKAGE_ZIP)"; \
 	echo "Package size: $$PACKAGE_SIZE"
 
-	if [ "$$PACKAGE_SIZE" -gt 50 ]; then \
+	@PACKAGE_SIZE_MB=$$(du -m $(PACKAGE_ZIP) | cut -f1); \
+	if [ "$$PACKAGE_SIZE_MB" -gt 50 ]; then \
 		echo "Warning: Package size exceeds 50MB, consider optimizing dependencies"; \
 	fi
 
