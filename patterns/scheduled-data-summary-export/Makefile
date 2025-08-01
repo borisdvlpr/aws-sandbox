@@ -2,15 +2,19 @@
 
 all: clean build
 
-# Variables
-LAMBDA_DIR = lambda/api-handler
-PACKAGE_ZIP = lambda/package.zip
-TEMP_DIR = /tmp/lambda-build-$(shell date +%s)
+HANDLER ?= api
+LAMBDA_DIR = lambda
+PACKAGE_ZIP = lambda/$(HANDLER)-handler.zip
+TEMP_DIR = /tmp/lambda-build-$(HANDLER)-$(shell date +%s)
 PYTHON_VERSION = 3.13
 
-# Build Lambda package
 build:
-	@echo "Building Lambda package..."
+	@if [ ! -d "$(LAMBDA_DIR)/$(HANDLER)-handler" ]; then \
+        echo "Error: Handler directory '$(LAMBDA_DIR)/$(HANDLER)-handler' does not exist."; \
+        exit 1; \
+    fi
+
+	@echo "Building Lambda package for $(HANDLER) handler..."
 	@rm -f $(PACKAGE_ZIP)
 	@mkdir -p $(TEMP_DIR)
 
@@ -23,7 +27,7 @@ build:
 		--target $(TEMP_DIR) \
 		-r $(LAMBDA_DIR)/requirements.txt
 	
-	@cp $(LAMBDA_DIR)/index.py $(TEMP_DIR)/
+	@cp $(LAMBDA_DIR)/$(HANDLER)-handler/index.py $(TEMP_DIR)/
 
 	@echo "Optimizing Lambda package..."
 	@find $(TEMP_DIR) -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true

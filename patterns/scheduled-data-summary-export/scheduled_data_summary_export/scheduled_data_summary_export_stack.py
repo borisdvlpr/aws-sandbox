@@ -47,7 +47,7 @@ class ScheduledDataSummaryExportStack(Stack):
             self, 
             "api_lambda",
             runtime = _lambda.Runtime.PYTHON_3_13,
-            code = _lambda.Code.from_asset(os.path.join(os.getcwd(), "lambda/package.zip")),
+            code = _lambda.Code.from_asset(os.path.join(os.getcwd(), "lambda/api-handler.zip")),
             handler = "index.handler",
             environment = {
                 "TABLE_NAME": car_table.table_name,
