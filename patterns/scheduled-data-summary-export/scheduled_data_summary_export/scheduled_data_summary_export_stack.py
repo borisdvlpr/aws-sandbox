@@ -3,6 +3,7 @@ from aws_cdk import (
     aws_apigateway as _apigw,
     aws_dynamodb as dynamodb,
     aws_lambda as _lambda,
+    aws_s3 as s3,
     RemovalPolicy,
     Stack
 )
@@ -27,6 +28,18 @@ class ScheduledDataSummaryExportStack(Stack):
             billing_mode = dynamodb.BillingMode.PAY_PER_REQUEST,
             encryption = dynamodb.TableEncryption.AWS_MANAGED,
             removal_policy = RemovalPolicy.DESTROY
+        )
+
+        # s3 bucket for weekly data summaries
+        summary_bucket = s3.Bucket(
+            self, 
+            "CarDataSummaryBucket",
+            bucket_name = f"car-data-summaries-{self.account}-{self.region}",
+            versioned = True,
+            encryption = s3.BucketEncryption.S3_MANAGED,
+            block_public_access = s3.BlockPublicAccess.BLOCK_ALL,
+            removal_policy = RemovalPolicy.DESTROY,
+            auto_delete_objects = True
         )
 
         # rest api lambda function
