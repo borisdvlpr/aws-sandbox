@@ -2,7 +2,10 @@ import aws_cdk as cdk
 from aws_cdk import (
     Stack,
     aws_apigateway as _apigw,
+    aws_dynamodb as dynamodb,
     aws_lambda as _lambda,
+    RemovalPolicy,
+    Stack
 )
 from constructs import Construct
 
@@ -10,6 +13,20 @@ class ScheduledDataSummaryExportStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        # dynamodb table for car data
+        car_table = dynamodb.Table(
+            self, 
+            "CarDataTable",
+            table_name = "car-data",
+            partition_key = dynamodb.Attribute(
+                name = "id",
+                type = dynamodb.AttributeType.STRING
+            ),
+            billing_mode = dynamodb.BillingMode.PAY_PER_REQUEST,
+            encryption = dynamodb.TableEncryption.AWS_MANAGED,
+            removal_policy = RemovalPolicy.DESTROY
+        )
 
         # rest api lambda function
         api_lambda = _lambda.Function(
