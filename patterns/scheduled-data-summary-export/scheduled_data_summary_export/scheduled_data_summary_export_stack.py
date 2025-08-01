@@ -59,6 +59,9 @@ class ScheduledDataSummaryExportStack(Stack):
                 allow_headers=["Content-Type"]
             ),
         )
+
+        # grant permissions
+        car_table.grant_write_data(api_lambda)
         
         # api resources and methods
         cars_resource = apigw.root.add_resource("cars")
