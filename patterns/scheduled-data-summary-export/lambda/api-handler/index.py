@@ -31,7 +31,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     Returns:
         API Gateway response
     """
+    # get type of http method
+    http_method = event.get('httpMethod')
+
+    # get table name from environment
+    table_name = os.environ.get('TABLE_NAME')
+    if not table_name:
+        logger.error("TABLE_NAME environment variable not set")
+        return create_error_response(500, 'Configuration error', 'Database configuration missing')
     
+    if http_method == "POST":
+        return create_car(table_name, event)
+    else:
+        return create_error_response(405, 'Method Not Allowed', f'Method {http_method} not supported')
+    
+def create_car(table_name: str, event: Dict[str, Any]) -> Dict[str, Any]:
     # validate request body existance
     if 'body' not in event or not event['body']:
         logger.error("Request error: missing request body")
@@ -50,15 +64,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     except ValidationError as e:
         logger.error(f"Validation error: {str(e)}")
         return create_error_response(400, 'Validation failed', 'Invalid car data format', e.errors())
-    
-    # get table name from environment
-    table_name = os.environ.get('TABLE_NAME')
-    if not table_name:
-        logger.error("TABLE_NAME environment variable not set")
-        return create_error_response(500, 'Configuration error', 'Database configuration missing')
-    
+
     # create new dynamodb item
-    new_car = create_dynamodb_item(car_data)
+    current_time = datetime.datetime.now(datetime.timezone.utc).isoformat() + 'Z'
+    new_car = {
+        'id': str(uuid.uuid4()),
+        'timestamp': current_time,
+        'brand': car_data.brand,
+        'model': car_data.model,
+        'year': car_data.year,
+        'engine_cc': car_data.engine_cc,
+        'created_at': current_time,
+        'updated_at': current_time
+    }
     
     # save new item to dynamodb
     try:
@@ -74,20 +92,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         'id': new_car['id'],
         'timestamp': new_car['timestamp']
     })
-
-def create_dynamodb_item(car_data: CarData) -> Dict[str, Any]:
-    """Create a DynamoDB item from validated car data"""
-    current_time = datetime.datetime.now(datetime.timezone.utc).isoformat() + 'Z'
-    return {
-        'id': str(uuid.uuid4()),
-        'timestamp': current_time,
-        'brand': car_data.brand,
-        'model': car_data.model,
-        'year': car_data.year,
-        'engine_cc': car_data.engine_cc,
-        'created_at': current_time,
-        'updated_at': current_time
-    }
 
 def create_response(status_code, body):
     """Create a standardized API response"""
