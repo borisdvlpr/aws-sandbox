@@ -14,6 +14,7 @@ logger.setLevel(logging.INFO)
 # initialize DynamoDB client
 dynamodb = boto3.resource('dynamodb')
 
+
 class CarData(BaseModel):
     brand: str = Field(..., min_length=1, max_length=50, description="Car brand")
     model: str = Field(..., min_length=1, max_length=100, description="Car model name")
@@ -47,7 +48,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         return create_error_response(405, 'Method Not Allowed', f'Method {http_method} not supported')
     
 def create_car(table_name: str, event: Dict[str, Any]) -> Dict[str, Any]:
-    """Add a new car item to DynamoDB"""
+    """
+    Add a new car item to DynamoDB.
+
+    Args:
+        table_name: Name of the DynamoDB table.
+        event: API Gateway event containing the request body.
+
+    Returns:
+        API Gateway response indicating success or error.
+    """
     # validate request body existance
     if 'body' not in event or not event['body']:
         logger.error("Request error: missing request body")
@@ -95,8 +105,17 @@ def create_car(table_name: str, event: Dict[str, Any]) -> Dict[str, Any]:
         'timestamp': new_car['timestamp']
     })
 
-def create_response(status_code, body):
-    """Create a standardized API response"""
+def create_response(status_code: int, body: Any) -> Dict[str, Any]:
+    """
+    Create a standardized API response.
+
+    Args:
+        status_code: HTTP status code for the response.
+        body: Response body to be serialized as JSON.
+
+    Returns:
+        Dictionary formatted as an API Gateway response.
+    """
     return {
         'statusCode': status_code,
         'headers': {
@@ -108,8 +127,19 @@ def create_response(status_code, body):
         'body': json.dumps(body)
     }
 
-def create_error_response(status_code, error, message, details=None):
-    """Create a standardized error response"""
+def create_error_response(status_code: int, error: str, message: str, details: Any) -> Dict[str, Any]:
+    """
+    Create a standardized error response.
+
+    Args:
+        status_code: HTTP status code for the error response.
+        error: Short error type or code.
+        message: Human-readable error message.
+        details: Additional error details (optional).
+
+    Returns:
+        Dictionary formatted as an API Gateway error response.
+    """
     body = {'error': error, 'message': message}
     if details:
         body['details'] = details
