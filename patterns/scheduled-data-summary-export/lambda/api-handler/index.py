@@ -31,8 +31,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     Returns:
         API Gateway response
     """
-    # get type of http method
+    # get http method and resource
     http_method = event.get('httpMethod')
+    resource = event.get('resource', '')
 
     # get table name from environment
     table_name = os.environ.get('TABLE_NAME')
@@ -40,12 +41,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         logger.error("TABLE_NAME environment variable not set")
         return create_error_response(500, 'Configuration error', 'Database configuration missing')
     
-    if http_method == "POST":
+    if http_method == "POST" and resource == "/cars":
         return create_car(table_name, event)
     else:
         return create_error_response(405, 'Method Not Allowed', f'Method {http_method} not supported')
     
 def create_car(table_name: str, event: Dict[str, Any]) -> Dict[str, Any]:
+    """Add a new car item to DynamoDB"""
     # validate request body existance
     if 'body' not in event or not event['body']:
         logger.error("Request error: missing request body")
