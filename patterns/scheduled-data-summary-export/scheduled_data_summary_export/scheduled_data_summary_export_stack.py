@@ -54,6 +54,19 @@ class ScheduledDataSummaryExportStack(Stack):
             }
         )
 
+        # weekly summary lambda function
+        summary_lambda = _lambda.Function(
+            self,
+            "summary_lambda",
+            runtime = _lambda.Runtime.PYTHON_3_13,
+            code = _lambda.Code.from_asset(os.path.join(os.getcwd(), "lambda/summary-handler.zip")),
+            handler = "index.handler",
+            environment = {
+                "BUCKET_NAME": summary_bucket.bucket_name,
+                "TABLE_NAME": car_table.table_name,
+            }
+        )
+
         # grant permissions
         car_table.grant_write_data(api_lambda)
 
