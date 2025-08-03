@@ -45,8 +45,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
         # prepare summary content
         summary_lines = [
-            json.dumps({"total_count": len(items)}, default = str),
-            *(json.dumps(item) for item in items)
+            json.dumps({"total_count": len(items)}),
+            *(json.dumps(item, default = str) for item in items)
         ]
         summary_content = "\n".join(summary_lines)
 
