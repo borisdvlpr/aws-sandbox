@@ -7,13 +7,13 @@ from pydantic import BaseModel, Field, ValidationError
 from typing import Dict, Any
 import uuid
 
+
 # configure logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-# initialize DynamoDB client
+# initialize dynamodb client
 dynamodb = boto3.resource('dynamodb')
-
 
 class CarData(BaseModel):
     brand: str = Field(..., min_length=1, max_length=50, description="Car brand")
@@ -127,7 +127,7 @@ def create_response(status_code: int, body: Any) -> Dict[str, Any]:
         'body': json.dumps(body)
     }
 
-def create_error_response(status_code: int, error: str, message: str, details: Any) -> Dict[str, Any]:
+def create_error_response(status_code: int, error: str, message: str, details: Any = None) -> Dict[str, Any]:
     """
     Create a standardized error response.
 
