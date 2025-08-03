@@ -2,6 +2,8 @@ import aws_cdk as cdk
 from aws_cdk import (
     aws_apigateway as _apigw,
     aws_dynamodb as dynamodb,
+    aws_events as events,
+    aws_events_targets as targets,
     aws_lambda as _lambda,
     aws_s3 as s3,
     RemovalPolicy,
@@ -143,6 +145,21 @@ class ScheduledDataSummaryExportStack(Stack):
                 )
             ]
         )
+
+        # eventbridge rule for weekly summary (every Sunday at 23:00)
+        weekly_rule = events.Rule(
+            self, "WeeklySummaryRule",
+            schedule=events.Schedule.cron(
+                minute="0",
+                hour="23",
+                month="*",
+                week_day="SUN"
+            ),
+            description="Trigger weekly car data summary"
+        )
+        
+        # target function to trigger summary
+        weekly_rule.add_target(targets.LambdaFunction(summary_lambda))
 
         # api gateway url output
         cdk.CfnOutput(
