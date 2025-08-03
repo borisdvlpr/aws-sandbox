@@ -69,6 +69,8 @@ class ScheduledDataSummaryExportStack(Stack):
 
         # grant permissions
         car_table.grant_write_data(api_lambda)
+        car_table.grant_read_data(summary_lambda)
+        summary_bucket.grant_write(summary_lambda)
 
         # api gateway
         apigw = _apigw.LambdaRestApi(
