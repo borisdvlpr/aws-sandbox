@@ -73,7 +73,12 @@ Implementing a CI/CD solution for this setup would require to follow a number of
 4. Run `cdk synth` to validate the CloudFormation stack. This step helps catch errors early and prevents failures during, deployment processes, specially long ones
     - Optionally, run `cdk diff`, for a detailed summary of infrastructure changes, publishing them to the task summary
 5. Deploy infrastructure
-    
+
+## References
+
+- [Building Lambda functions with Python](https://docs.aws.amazon.com/lambda/latest/dg/lambda-python.html)
+- [Lambda examples using SDK for Python (Boto3)](https://docs.aws.amazon.com/code-library/latest/ug/python_3_lambda_code_examples.html)
+- [Programming Amazon DynamoDB with Python and Boto3](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/programming-with-python.html)
 
 ## Useful commands
 
